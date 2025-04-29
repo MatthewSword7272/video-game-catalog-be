@@ -8,7 +8,11 @@ use Illuminate\Http\Request;
 class PlatformController extends Controller
 {
     public function index() {
-        $platforms = Platform::all();
-        return $platforms;
+        try {
+            $platforms = Platform::all();
+            return response()->json($platforms, 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
 }
