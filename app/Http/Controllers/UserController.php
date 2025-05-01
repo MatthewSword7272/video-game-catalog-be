@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -14,8 +15,8 @@ class UserController extends Controller
      */
     public function index()
     {
-        $games = User::all();
-        return $games;
+        $users = User::all();
+        return $users;
     }
 
     /**
@@ -25,16 +26,13 @@ class UserController extends Controller
     {
         $validated = $request->validate([
             'username' => 'required|string|max:20',
-            'name' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
             'password' => 'required|string|max:20',
         ]);
 
-        // Hash the password before creating the user
-        $userData = array_merge($validated, [
-            'password' => Hash::make($validated['password']),
-        ]);
 
         User::create([
+            'name' => $validated['name'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
         ]);
@@ -45,9 +43,40 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, User $user)
     {
-        //
+        // Check if this is a verification request (from /users/verify endpoint)
+        if ($request->routeIs('users.verify')) {
+            Log::info('User verification request');
+
+            $username = $request->query('username');
+            $password = $request->query('password');
+
+            Log::info("Attempting to verify user: {$username}");
+
+            // Find user by username
+            $user = User::where('username', $username)->first();
+
+            if (!$user) {
+                Log::info("User not found: {$username}");
+                return response()->json(['message' => 'User not found'], 404);
+            }
+
+            // Verify password
+            if (!Hash::check($password, $user->password)) {
+                Log::info("Invalid password for user: {$username}");
+                return response()->json(['message' => 'Invalid credentials'], 401);
+            }
+
+            Log::info("User verified successfully: {$username}");
+            return response()->json($user);
+        }
+
+        if ($user) {
+            return response()->json($user);
+        }
+
+        return response()->json(['message' => 'User not found'], 404);
     }
 
     /**
