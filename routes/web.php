@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PlatformController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoGameController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -10,15 +11,19 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/dashboard', function () {
+//     return view('dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
+
+
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
+Route::post('/users', [UserController::class, 'store'])->name('users.store')->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::get('/games', [VideoGameController::class, 'index'])->name('games.index');
 Route::get('/games/{videoGame}', [VideoGameController::class, 'show'])->name('games.show');
