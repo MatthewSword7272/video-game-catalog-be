@@ -24,7 +24,7 @@ Route::get('/', function () {
 
 Route::get('/users', [UserController::class, 'index'])->name('users.index');
 Route::post('/users', [UserController::class, 'store'])->name('users.store')->withoutMiddleware([VerifyCsrfToken::class]);
-Route::get('/users/verify', [UserController::class, 'show'])->name('users.verify')->withoutMiddleware([VerifyCsrfToken::class]);
+Route::post('/users/verify', [UserController::class, 'show'])->name('users.verify')->withoutMiddleware([VerifyCsrfToken::class]);
 // Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::get('/games', [VideoGameController::class, 'index'])->name('games.index');

@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('v_game', function (Blueprint $table) {
             $table->id();
-            $table->string('Title');
-            $table->string('Genre');
-            $table->string('Developer');
-            $table->string('Publisher');
-            $table->year('Release year');
-            $table->string('Region Code');
-            $table->string('Platform');
-            $table->string('Cover Art');
+            $table->string('title');
+            $table->string('genre');
+            $table->string('developer');
+            $table->string('publisher');
+            $table->year('release_year');
+            $table->string('region_code');
+            $table->string('platform');
+            $table->string('image');
             $table->timestamps();
         });
     }

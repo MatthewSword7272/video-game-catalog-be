@@ -49,8 +49,13 @@ class UserController extends Controller
         if ($request->routeIs('users.verify')) {
             Log::info('User verification request');
 
-            $username = $request->query('username');
-            $password = $request->query('password');
+            $validated = $request->validate([
+                'username' => 'required|string',
+                'password' => 'required|string',
+            ]);
+
+            $username = $validated['username'];
+            $password = $validated['password'];
 
             Log::info("Attempting to verify user: {$username}");
 
