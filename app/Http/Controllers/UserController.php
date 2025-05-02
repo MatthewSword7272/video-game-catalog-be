@@ -31,13 +31,13 @@ class UserController extends Controller
         ]);
 
 
-        User::create([
+        $user = User::create([
             'name' => $validated['name'],
             'username' => $validated['username'],
             'password' => Hash::make($validated['password']),
         ]);
 
-        return response()->json(['message' => 'User Added'], 200);
+        return response()->json(['message' => 'User Added', 'user' => $user], 200);
     }
 
     /**
