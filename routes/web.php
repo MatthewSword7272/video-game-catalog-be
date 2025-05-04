@@ -28,10 +28,15 @@ Route::post('/users/verify', [UserController::class, 'show'])->name('users.verif
 // Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')->withoutMiddleware([VerifyCsrfToken::class]);
 
 Route::get('/games', [VideoGameController::class, 'index'])->name('games.index');
+
+Route::get('/user/games', [VideoGameController::class, 'getUserGames'])->name('games.getUserGames')->withoutMiddleware([VerifyCsrfToken::class]);
+
 Route::get('/games/{videoGame}', [VideoGameController::class, 'show'])->name('games.show');
+
 Route::post('/games', [VideoGameController::class, 'store'])->name('games.store')->withoutMiddleware([VerifyCsrfToken::class]);
 Route::delete('/games/{videoGame}', [VideoGameController::class, 'destroy'])->name('games.destroy')->withoutMiddleware([VerifyCsrfToken::class]);
 Route::put('/games/{videoGame}', [VideoGameController::class, 'update'])->name('games.update')->withoutMiddleware([VerifyCsrfToken::class]);
+
 
 Route::get('/platforms', [PlatformController::class, 'index'])->name('platforms.index');
 

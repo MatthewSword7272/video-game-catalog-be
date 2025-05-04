@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\VideoGame;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -18,6 +19,19 @@ class VideoGameController extends Controller
         return $games;
     }
 
+    public function getUserGames(Request $request)
+    {
+        Log::info($request->all());
+        $userId = $request->input('user_id');
+
+        if (!$userId) {
+            return response()->json(['error' => 'User ID is required'], 400);
+        }
+
+        $games = VideoGame::where('user_id', $userId)->get();
+        return response()->json($games);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -31,6 +45,7 @@ class VideoGameController extends Controller
      */
     public function store(Request $request)
     {
+        Log::info($request->all());
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'genre' => 'required|string|max:100',
@@ -51,9 +66,8 @@ class VideoGameController extends Controller
             'Authorization' => "Bearer $auth_token"
         ])->withBody('fields cover.*; where name = "'.$title.'";')->post('https://api.igdb.com/v4/games/');
 
-        // Log::info($imageData[0]['cover']['image_id']);
-
         $newGame = array_merge($validated, [
+            'user_id' => $request['user_id'],
             'image' => $imageData[0]['cover']['image_id']
         ]);
 

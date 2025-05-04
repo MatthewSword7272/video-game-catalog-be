@@ -16,6 +16,7 @@ class VideoGame extends Model
         'release_year',
         'platform',
         'region_code',
-        'image'
+        'image',
+        'user_id',
     ];
 }
