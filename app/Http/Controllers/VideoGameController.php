@@ -21,7 +21,6 @@ class VideoGameController extends Controller
 
     public function getUserGames(Request $request)
     {
-        Log::info($request->all());
         $userId = $request->input('user_id');
 
         if (!$userId) {
@@ -45,7 +44,6 @@ class VideoGameController extends Controller
      */
     public function store(Request $request)
     {
-        Log::info($request->all());
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'genre' => 'required|string|max:100',
@@ -64,14 +62,15 @@ class VideoGameController extends Controller
         $imageData = Http::withHeaders([
             'Client-ID' => env('TWITCH_CLIENT_ID'),
             'Authorization' => "Bearer $auth_token"
-        ])->withBody('fields cover.*; where name = "'.$title.'";')->post('https://api.igdb.com/v4/games/');
+        ])->withBody('fields cover.*, summary; where name = "'.$title.'";')->post('https://api.igdb.com/v4/games/');
 
         $newGame = array_merge($validated, [
             'user_id' => $request['user_id'],
+            'description' => $imageData[0]['summary'] ?? 'N/A',
             'image' => $imageData[0]['cover']['image_id']
         ]);
 
-        // Log::info($newGame);
+        Log::info($newGame);
 
         VideoGame::create($newGame);
 

@@ -48,7 +48,6 @@ class UserController extends Controller
     {
         // Check if this is a verification request (from /users/verify endpoint)
         if ($request->routeIs('users.verify')) {
-            Log::info('User verification request');
 
             $validated = $request->validate([
                 'username' => 'required|string',
@@ -58,23 +57,17 @@ class UserController extends Controller
             $username = $validated['username'];
             $password = $validated['password'];
 
-            Log::info("Attempting to verify user: {$username}");
-
             // Find user by username
             $user = User::where('username', $username)->first();
 
             if (!$user) {
-                Log::info("User not found: {$username}");
                 return response()->json(['message' => 'User not found'], 404);
             }
 
             // Verify password
             if (!Hash::check($password, $user->password)) {
-                Log::info("Invalid password for user: {$username}");
                 return response()->json(['message' => 'Invalid credentials'], 401);
             }
-
-            Log::info("User verified successfully: {$username}");
             return response()->json($user);
         }
 

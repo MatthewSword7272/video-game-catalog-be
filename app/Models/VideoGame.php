@@ -18,5 +18,6 @@ class VideoGame extends Model
         'region_code',
         'image',
         'user_id',
+        'description',
     ];
 }
